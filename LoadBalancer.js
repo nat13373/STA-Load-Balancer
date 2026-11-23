@@ -22,23 +22,22 @@ export default class LoadBalancer {
     //   payload: "08319462", // Datos que envía el cliente
     //   work: 4              // Unidades de trabajo necesarias
     // }
-    
   let best = this.servers[0];
-  let bestLoad = Infinity;
+  let bestConnections = Infinity;
 
   for (const server of this.servers) {
-    let load = server.queuedRequests.length + 1;
+    let connections = server.queuedRequests.length;
     if (server.activeRequest) {
-      load = load + 1;
+      connections = connections + 1;
     }
-    load = load / server.power;
-
-    if (load < bestLoad) {
-      bestLoad = load;
+    if (
+      connections < bestConnections ||
+      (connections === bestConnections && server.power > best.power)
+    ) {
+      bestConnections = connections;
       best = server;
     }
   }
-
   return sendToServer(best.id);
   }
 }

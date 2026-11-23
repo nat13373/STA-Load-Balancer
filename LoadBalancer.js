@@ -27,7 +27,7 @@ export default class LoadBalancer {
     const size = servers.length;
     for (let i=0; i<size; i++) {
       const server = this.servers[i];
-      sendToServer(server.id);
+      return sendToServer(server.id);
     }
   }
 }

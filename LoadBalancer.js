@@ -23,11 +23,22 @@ export default class LoadBalancer {
     //   work: 4              // Unidades de trabajo necesarias
     // }
     
-    const servers = this.servers;
-    const size = servers.length;
-    for (let i=0; i<size; i++) {
-      const server = this.servers[i];
-      return sendToServer(server.id);
+  let best = this.servers[0];
+  let bestLoad = Infinity;
+
+  for (const server of this.servers) {
+    let load = server.queuedRequests.length + 1;
+    if (server.activeRequest) {
+      load = load + 1;
     }
+    load = load / server.power;
+
+    if (load < bestLoad) {
+      bestLoad = load;
+      best = server;
+    }
+  }
+
+  return sendToServer(best.id);
   }
 }
